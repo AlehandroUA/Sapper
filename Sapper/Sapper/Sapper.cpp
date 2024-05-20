@@ -45,6 +45,106 @@ void helpMenu() {
     printCentered(centerX - 5, centerY + 7, "Натисніть будь-яку клавішу для продовження...", selected);
     _getch();
 }
+void authorizationTempFileInput(string userName,string passWord) {
+    ofstream fileIn(fileTempUser);
+    if (fileIn.is_open()) {
+        fileIn << userName;
+        fileIn << " ";
+        fileIn << passWord;
+    }
+    fileIn.close();
+}
+
+void authorization() {
+    system("cls");
+    int comparison = 0;
+    int menuOption = 0;
+    int exit = 1;
+    string passWord;
+    string userName;
+    do {
+        nicknameenter:
+        userName = inputUsername();
+        comparison = fileOpen(1, userName,"");
+
+        if (comparison == 1) {
+            passwordAgain:
+            system("cls");
+
+            do {
+                SetConsoleTextAttribute(consoleWindow, warningOrError);
+                SetConsoleCursorPosition(consoleWindow, {centerX, centerY - 1});
+                cout << "нік зайнято! введіть:";
+                SetConsoleTextAttribute(consoleWindow, black);
+                switch (1) {
+                    case 1: {
+                        SetConsoleCursorPosition(consoleWindow, {centerX, centerY + 1});
+                        if (menuOption == 0) {
+                            SetConsoleTextAttribute(consoleWindow, selected);
+                            cout << "> Новий нік";
+                        }
+                        else {
+                            SetConsoleTextAttribute(consoleWindow, selectedNot);
+                            cout << "Новий нік";
+                        }
+                        SetConsoleTextAttribute(consoleWindow, black);
+                    }
+                    case 2: {
+                        SetConsoleCursorPosition(consoleWindow, {centerX, centerY + 2});
+                        if (menuOption == 1) {
+                            SetConsoleTextAttribute(consoleWindow, selected);
+                            cout << "> Пароль";
+                        }
+                        else {
+                            SetConsoleTextAttribute(consoleWindow, selectedNot);
+                            cout << "Пароль";
+                        }
+                        SetConsoleTextAttribute(consoleWindow, black);
+                    }
+                }
+
+                switch (_getch()) {
+                case UP: {
+                    menuOption > 0 ? menuOption-- : menuOption = 1;
+                    break;
+                }
+                case DOWN: {
+                    menuOption < 1 ? menuOption++ : menuOption = 0;
+                    break;
+                }
+                case Enter: {
+                    switch (menuOption) {
+                        case 0: {
+                            goto nicknameenter;
+                        }
+                        case 1: {
+                            passWord = inputPassword();
+                            comparison = fileOpen(2, userName, passWord);
+                            if (comparison == 1) {
+                                goto passwordAgain;
+                            }
+                            else {
+                                exit = 0;
+                            }
+                            break;
+                        }
+                    }
+                    break;
+                }
+                }
+                system("cls");
+            } while (exit);
+        }
+
+    } while (comparison == 1);
+
+    if (comparison == 0) {
+        passWord = inputPassword();
+    }
+
+    authorizationTempFileInput(userName, passWord);
+    difficultyMenu();
+}
 
 void displayMenuOption(consolePosition y, const string& text, bool isSelected) {
     printCentered(centerX + 1, y, (isSelected ? "> " : "") + text, isSelected ? selected : selectedNot);
@@ -107,3 +207,4 @@ int main() {
     menuHello();
     return 0;
 }
+
