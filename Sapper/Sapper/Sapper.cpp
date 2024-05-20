@@ -3,6 +3,7 @@
 #include <string>
 #include <conio.h>
 #include <windows.h>
+
 using namespace std;
 
 typedef const int keyPressedValue;
@@ -21,160 +22,82 @@ color selected = 206;
 color selectedNot = 62;
 color black = 0;
 
-void helpMenu() {
-    system("cls");
-    SetConsoleTextAttribute(consoleWindow, selected);
-    SetConsoleCursorPosition(consoleWindow, { centerX - 5, centerY });
-    cout << "Enter - Взаємодія з полем";
-    SetConsoleTextAttribute(consoleWindow, black);
+enum MenuOption { NEW_GAME, HELP, LEADERBOARD, EXIT, MENU_OPTIONS_COUNT };
 
-    SetConsoleTextAttribute(consoleWindow, selected);
-    SetConsoleCursorPosition(consoleWindow, { centerX - 5, centerY + 1 });
-    cout << "F - Поставити флаг";
-    SetConsoleTextAttribute(consoleWindow, black);
-
-    SetConsoleTextAttribute(consoleWindow, selected);
-    SetConsoleCursorPosition(consoleWindow, { centerX - 5, centerY + 2 });
-    cout << "УПРАВЛІННЯ:";
-    SetConsoleTextAttribute(consoleWindow, black);
-
-
-    SetConsoleTextAttribute(consoleWindow, selected);
-    SetConsoleCursorPosition(consoleWindow, { centerX, centerY + 4 });
-    cout << "W";
-    SetConsoleTextAttribute(consoleWindow, black);
-
-    SetConsoleTextAttribute(consoleWindow, selected);
-    SetConsoleCursorPosition(consoleWindow, { centerX - 1, centerY + 5 });
-    cout << "ASD";
-    SetConsoleTextAttribute(consoleWindow, black);
-
-    SetConsoleCursorPosition(consoleWindow, { centerX - 5, centerY + 7 });
-    SetConsoleTextAttribute(consoleWindow, selected);
-    system("pause");
-    SetConsoleTextAttribute(consoleWindow, black);
+void setTextColor(color col) {
+    SetConsoleTextAttribute(consoleWindow, col);
 }
 
+void printCentered(consolePosition x, consolePosition y, const string& text, color col) {
+    SetConsoleCursorPosition(consoleWindow, { x, y });
+    setTextColor(col);
+    cout << text;
+    setTextColor(black);
+}
+
+void helpMenu() {
+    system("cls");
+    printCentered(centerX - 5, centerY, "Enter - Взаємодія з полем", selected);
+    printCentered(centerX - 5, centerY + 1, "F - Поставити флаг", selected);
+    printCentered(centerX - 5, centerY + 2, "УПРАВЛІННЯ:", selected);
+    printCentered(centerX, centerY + 4, "W", selected);
+    printCentered(centerX - 1, centerY + 5, "ASD", selected);
+    printCentered(centerX - 5, centerY + 7, "Натисніть будь-яку клавішу для продовження...", selected);
+    _getch();
+}
+
+void displayMenuOption(consolePosition y, const string& text, bool isSelected) {
+    printCentered(centerX + 1, y, (isSelected ? "> " : "") + text, isSelected ? selected : selectedNot);
+}
 
 void menuHello() {
-    int menuOption = 0;
-    int exit = 1;
-    int che = 0;
+    MenuOption menuOption = NEW_GAME;
+    bool exit = false;
 
     do {
-        SetConsoleTextAttribute(consoleWindow, selected);
-        SetConsoleCursorPosition(consoleWindow, { centerX, centerY - 1 });
-        cout << "САПЕР REALISE ";
-        SetConsoleTextAttribute(consoleWindow, black);
-        switch (1) {
-        case 1: {
-
-            SetConsoleCursorPosition(consoleWindow, { centerX + 1, centerY + 1 });
-            if (menuOption == 0) {
-                SetConsoleTextAttribute(consoleWindow, selected);
-                cout << "> Нова гра" << endl;
-            }
-            else {
-                SetConsoleTextAttribute(consoleWindow, selectedNot);
-                cout << "Нова гра" << endl;
-            }
-            SetConsoleTextAttribute(consoleWindow, black);
-        }
-        case 2: {
-
-            SetConsoleCursorPosition(consoleWindow, { centerX + 1, centerY + 2 });
-            if (menuOption == 1) {
-                SetConsoleTextAttribute(consoleWindow, selected);
-                cout << "> Допомога";
-            }
-            else {
-                SetConsoleTextAttribute(consoleWindow, selectedNot);
-                cout << "Допомога";
-            }
-            SetConsoleTextAttribute(consoleWindow, black);
-        }
-        case 3: {
-
-            SetConsoleCursorPosition(consoleWindow, { centerX + 1, centerY + 3 });
-            if (menuOption == 2) {
-                SetConsoleTextAttribute(consoleWindow, selected);
-                cout << "> Таблиця лідерів";
-            }
-            else {
-                SetConsoleTextAttribute(consoleWindow, selectedNot);
-                cout << "Таблиця лідерів";
-            }
-            SetConsoleTextAttribute(consoleWindow, black);
-        }
-        case 4: {
-            SetConsoleCursorPosition(consoleWindow, { centerX + 1, centerY + 4 });
-            if (menuOption == 3) {
-                SetConsoleTextAttribute(consoleWindow, selected);
-                cout << "> Вихід";
-            }
-            else {
-                SetConsoleTextAttribute(consoleWindow, selectedNot);
-                cout << "Вихід";
-            }
-            SetConsoleTextAttribute(consoleWindow, black);
-        }
-        }
+        system("cls");
+        printCentered(centerX, centerY - 1, "САПЕР REALISE", selected);
+        displayMenuOption(centerY + 1, "Нова гра", menuOption == NEW_GAME);
+        displayMenuOption(centerY + 2, "Допомога", menuOption == HELP);
+        displayMenuOption(centerY + 3, "Таблиця лідерів", menuOption == LEADERBOARD);
+        displayMenuOption(centerY + 4, "Вихід", menuOption == EXIT);
 
         switch (_getch()) {
-
-        case UP: {
-            menuOption > 0 ? menuOption-- : menuOption = 3;
+        case UP:
+            menuOption = static_cast<MenuOption>((menuOption - 1 + MENU_OPTIONS_COUNT) % MENU_OPTIONS_COUNT);
             break;
-        }
-
-        case DOWN: {
-            menuOption < 3 ? menuOption++ : menuOption = 0;
+        case DOWN:
+            menuOption = static_cast<MenuOption>((menuOption + 1) % MENU_OPTIONS_COUNT);
             break;
-        }
-
-        case Enter: {
+        case Enter:
             switch (menuOption) {
-            case 0: {
-                //authorization();
+            case NEW_GAME:
+                // authorization();
                 break;
-            }
-
-            case 1: {
+            case HELP:
                 helpMenu();
                 break;
-            }
-
-            case 2: {
-                //fileOpen();
+            case LEADERBOARD:
+                // fileOpen();
                 break;
-            }
-
-            case 3: {
-                exit = 0;
+            case EXIT:
+                exit = true;
                 break;
-            }
             }
             break;
         }
-        }
-        system("cls");
-    } while (exit);
-    SetConsoleTextAttribute(consoleWindow, selected);
-    SetConsoleCursorPosition(consoleWindow, { centerX,centerY + 3 });
-    cout << "\tДо зустрічі!" << endl;
-    SetConsoleCursorPosition(consoleWindow, { centerX,centerY + 7 });
-    SetConsoleTextAttribute(consoleWindow, 15);
+    } while (!exit);
+    system("cls");
+    printCentered(centerX, centerY + 3, "\tДо зустрічі!", selected);
+    printCentered(centerX, centerY + 7, " ", 15); // Reset to white text
 }
 
 void firstTime() {
-    int firstTime = 0;
     ifstream fileRead(fileFirstTime);
-    ofstream fileCreate;
-    if (fileRead.peek() == EOF) {
-        fileCreate.open(fileFirstTime);
+    if (!fileRead || fileRead.peek() == EOF) {
+        ofstream fileCreate(fileFirstTime);
         fileCreate << ":)";
         helpMenu();
-        system("cls");
     }
 }
 
@@ -182,4 +105,5 @@ int main() {
     SetConsoleOutputCP(1251);
     firstTime();
     menuHello();
+    return 0;
 }
