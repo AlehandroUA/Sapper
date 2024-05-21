@@ -195,6 +195,43 @@ void helpMenu() {
     _getch();
 }
 
+void fieldSize(int difficulty) {
+    int height = 0, width = 0;
+    bool error = false;
+    do {
+        system("cls");
+        SetConsoleCursorPosition(consoleWindow, { centerX, centerY - 1 });
+        SetConsoleTextAttribute(consoleWindow, selected);
+        cout << "Розмірність поля:" << endl;
+        SetConsoleTextAttribute(consoleWindow, black);
+
+        SetConsoleCursorPosition(consoleWindow, { centerX, centerY + 1 });
+        SetConsoleTextAttribute(consoleWindow, selectedNot);
+        cout << "Введіть висоту поля: ";
+        SetConsoleTextAttribute(consoleWindow, selected);
+        cin >> height;
+        SetConsoleTextAttribute(consoleWindow, black);
+        if (height == 0) {
+            cin.clear();
+            cin.ignore((numeric_limits<streamsize>::max)(), '\n');
+            continue;
+        }
+        SetConsoleCursorPosition(consoleWindow, { centerX, centerY + 2 });
+        SetConsoleTextAttribute(consoleWindow, selectedNot);
+        cout << "Введіть ширину поля: ";
+        SetConsoleTextAttribute(consoleWindow, selected);
+        cin >> width;
+        SetConsoleTextAttribute(consoleWindow, black);
+        if (width == 0) {
+            cin.clear();
+            cin.ignore((numeric_limits<streamsize>::max)(), '\n');
+            continue;
+        }
+    } while (height < 2 || width < 2);
+
+    //fieldFilling();
+}
+
 int difficultyMenu() {
     int diffuculty = 0;
     int menuOption = 0;
@@ -202,10 +239,7 @@ int difficultyMenu() {
 
     system("cls");
     do {
-        SetConsoleTextAttribute(consoleWindow, selected);
-        SetConsoleCursorPosition(consoleWindow, {centerX, centerY - 1});
-        cout << "Виберіть рівень складності:";
-        SetConsoleTextAttribute(consoleWindow, black);
+        printCentered(centerX, centerY - 1, "Виберіть рівень складності:", selected);
         switch (1) {
             case 1: {
                 SetConsoleCursorPosition(consoleWindow, {centerX, centerY + 1});
@@ -313,9 +347,7 @@ int difficultyMenu() {
                     case 4: {
                         do {
                             system("cls");
-                            SetConsoleCursorPosition(consoleWindow, {centerX, centerY});
-                            SetConsoleTextAttribute(consoleWindow, selectedNot);
-                            cout << "Введіть відсоток заповненості поля мінами: ";
+                            printCentered(centerX, centerY, "Введіть відсоток заповненості поля мінами: ", selectedNot);
                             SetConsoleTextAttribute(consoleWindow, selected);
                             cin >> diffuculty;
                             SetConsoleTextAttribute(consoleWindow, black);
@@ -462,6 +494,7 @@ void authorization() {
     }
 
     authorizationTempFileInput(userName, passWord);
+    difficultyMenu();
 }
 
 void menuHello() {
