@@ -1,8 +1,10 @@
 ﻿#include <iostream>
 #include <fstream>
 #include <string>
+#include <vector>
 #include <conio.h>
 #include <windows.h>
+#include <limits>
 
 using namespace std;
 
@@ -35,6 +37,135 @@ struct user {
     int size;
     int sum;
 };
+
+int lines() {
+    string check;
+    ifstream file(fileMainUsers);
+    int lines_count = 0;
+    if (file.peek() == EOF)
+    {
+        return 0;
+    }
+    while (getline(file, check))
+    {
+        lines_count++;
+    }
+
+    file.close();
+    return lines_count;
+}
+
+void fileBubleSort(int countOfLines, struct user ptr[]) {
+    bool exit;
+    short int centerMoveY = centerY;
+    int tempSum = 0, tempScore = 0, tempSizeMap = 0, tempDifficulty = 0;
+    string tempName, tempPassword;
+    for (int i = 0; i < countOfLines; i++) {
+        if (countOfLines > 1) {
+            do {
+                exit = false;
+                for (int i = 0; i < countOfLines; i++) {
+                    if (i + 1 != countOfLines && ptr[i + 1].sum > ptr[i].sum) {
+
+                        tempSum = ptr[i].sum;
+                        tempScore = ptr[i].score;
+                        tempSizeMap = ptr[i].size;
+                        tempDifficulty = ptr[i].difficulty;
+                        tempName = ptr[i].userName;
+                        tempPassword = ptr[i].passWord;
+
+                        ptr[i].sum = ptr[i + 1].sum;
+                        ptr[i].score = ptr[i + 1].score;
+                        ptr[i].size = ptr[i + 1].size;
+                        ptr[i].difficulty = ptr[i + 1].difficulty;
+                        ptr[i].userName = ptr[i + 1].userName;
+                        ptr[i].passWord = ptr[i + 1].passWord;
+
+                        ptr[i + 1].sum = tempSum;
+                        ptr[i + 1].score = tempScore;
+                        ptr[i + 1].size = tempSizeMap;
+                        ptr[i + 1].difficulty = tempDifficulty;
+                        ptr[i + 1].userName = tempName;
+                        ptr[i + 1].passWord = tempPassword;
+                        exit = true;
+                    }
+                }
+            } while (exit);
+        }
+    }
+    for (int i = 0; i < countOfLines; i++) {
+        SetConsoleCursorPosition(consoleWindow, { centerX - 40, centerMoveY });
+        SetConsoleTextAttribute(consoleWindow, selected);
+        cout << i + 1 << " Місце; - Нік: " << ptr[i].userName << " Мін залишилось: " << ptr[i].score << " Відсоток заповненості поля: " << ptr[i].difficulty << "%; Розмір поля: " << ptr[i].size << "; Рейтинг: " << ptr[i].sum;
+        SetConsoleTextAttribute(consoleWindow, black);
+        centerMoveY += 1;
+    }
+}
+
+int fileOpen(int Comparison, string Name, string Password) {
+    const int countOfLines = lines();
+    int tempScore = 0, tempSizeMap = 0, tempDifficuty = 0, tempSum = 0;
+    user* ptr = new user[countOfLines];
+    bool exit = true;
+    ifstream file(fileMainUsers);
+    string tempName, tempPassword;
+    system("cls");
+    if (file.peek() == EOF)
+    {
+        if (Comparison == 0) {
+            SetConsoleTextAttribute(consoleWindow, selected);
+            SetConsoleCursorPosition(consoleWindow, { centerX - 5, centerY - 2 });
+            cout << "Записів нема! Ви - перший!";
+            SetConsoleTextAttribute(consoleWindow, black);
+
+            SetConsoleCursorPosition(consoleWindow, { centerX - 5, centerY + 2 });
+            SetConsoleTextAttribute(consoleWindow, selected);
+            system("pause");
+            SetConsoleTextAttribute(consoleWindow, black);
+        }
+        return 0;
+    }
+    for (int i = 0; i < countOfLines; i++) {
+        file >> ptr[i].userName;
+        file >> ptr[i].passWord;
+        file >> ptr[i].score;
+        file >> ptr[i].difficulty;
+        file >> ptr[i].size;
+        ptr[i].sum = ptr[i].difficulty + ptr[i].size - ptr[i].score;
+        switch (Comparison) {
+        case 1: {
+            if (Name == ptr[i].userName) {
+                return 1;
+            }
+        };
+        case 2: {
+            if (Name == ptr[i].userName) {
+                if (Password == ptr[i].passWord) {
+                    return -1;
+                }
+            }
+        }
+        }
+    }
+    file.close();
+
+    if (Comparison == 1) {
+        return 0;
+    }
+    else if (Comparison == 2) {
+        return 1;
+    }
+
+    fileBubleSort(countOfLines, ptr);
+
+    SetConsoleCursorPosition(consoleWindow, { centerX - 20, 0 });
+    SetConsoleTextAttribute(consoleWindow, selected);
+    system("pause");
+    SetConsoleTextAttribute(consoleWindow, black);
+    delete[]ptr;
+
+    return 0;
+}
 
 void setTextColor(color col) {
     SetConsoleTextAttribute(consoleWindow, col);
@@ -108,15 +239,14 @@ void authorization() {
     do {
     nicknameenter:
         userName = inputUsername();
-        //comparison = fileOpen(1, userName, "");
+        comparison = fileOpen(1, userName, "");
 
         if (comparison == 1) {
         passwordAgain:
             system("cls");
-            
 
             do {
-                printCentered(centerX, centerY-1, "нік зайнято! введіть:", warningOrError);
+                printCentered(centerX, centerY - 1, "нік зайнято! введіть:", warningOrError);
                 setTextColor(black);
                 switch (1) {
                 case 1: {
@@ -161,7 +291,7 @@ void authorization() {
                     }
                     case 1: {
                         passWord = inputPassword();
-                        //comparison = fileOpen(2, userName, passWord);
+                        comparison = fileOpen(2, userName, passWord);
                         if (comparison == 1) {
                             goto passwordAgain;
                         }
@@ -215,7 +345,7 @@ void menuHello() {
                 helpMenu();
                 break;
             case LEADERBOARD:
-                // fileOpen();
+                fileOpen(0, "", "");
                 break;
             case EXIT:
                 exit = true;
