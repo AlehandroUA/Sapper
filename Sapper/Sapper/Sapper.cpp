@@ -246,7 +246,7 @@ void authorization() {
             system("cls");
 
             do {
-                printCentered(centerX, centerY-1, "нік зайнято! введіть:", warningOrError);
+                printCentered(centerX, centerY - 1, "нік зайнято! введіть:", warningOrError);
                 setTextColor(black);
                 switch (1) {
                 case 1: {
