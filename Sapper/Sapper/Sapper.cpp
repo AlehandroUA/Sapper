@@ -27,6 +27,8 @@ color selectedNot = 62;
 color black = 0;
 color warningOrError = 79;
 
+color difficulty = 47;
+
 enum MenuOption { NEW_GAME, HELP, LEADERBOARD, EXIT, MENU_OPTIONS_COUNT };
 
 struct user {
@@ -191,6 +193,151 @@ void helpMenu() {
     printCentered(centerX - 1, centerY + 5, "ASD", selected);
     printCentered(centerX - 5, centerY + 7, "Натисніть будь-яку клавішу для продовження...", selected);
     _getch();
+}
+
+int difficultyMenu() {
+    int diffuculty = 0;
+    int menuOption = 0;
+    int exit = 1;
+
+    system("cls");
+    do {
+        SetConsoleTextAttribute(consoleWindow, selected);
+        SetConsoleCursorPosition(consoleWindow, {centerX, centerY - 1});
+        cout << "Виберіть рівень складності:";
+        SetConsoleTextAttribute(consoleWindow, black);
+        switch (1) {
+            case 1: {
+                SetConsoleCursorPosition(consoleWindow, {centerX, centerY + 1});
+                SetConsoleTextAttribute(consoleWindow, difficulty);
+                if (menuOption == 0) {
+                    cout << "> Легко";
+                }
+                else {
+                    cout << "Легко";
+                }
+                SetConsoleTextAttribute(consoleWindow, black);
+            }
+            case 2: {
+                SetConsoleCursorPosition(consoleWindow, {centerX, centerY + 2});
+                SetConsoleTextAttribute(consoleWindow, difficulty + 16);
+                if (menuOption == 1) {
+                    cout << "> Середнє";
+                }
+                else {
+                    cout << "Середнє";
+                }
+                SetConsoleTextAttribute(consoleWindow, black);
+            }
+            case 3: {
+                SetConsoleCursorPosition(consoleWindow, {centerX, centerY + 3});
+                SetConsoleTextAttribute(consoleWindow, difficulty + 32);
+                if (menuOption == 2) {
+                    cout << "> Важко";
+                }
+                else {
+                    cout << "Важко";
+                }
+                SetConsoleTextAttribute(consoleWindow, black);
+            }
+            case 4: {
+                SetConsoleCursorPosition(consoleWindow, {centerX, centerY + 4});
+                SetConsoleTextAttribute(consoleWindow, difficulty + 48);
+                if (menuOption == 3) {
+                    cout << "> Хардкор";
+                }
+                else {
+                    cout << "Хардкор";
+                }
+                SetConsoleTextAttribute(consoleWindow, black);
+            }
+            case 5: {
+                SetConsoleCursorPosition(consoleWindow, {centerX, centerY + 5});
+                SetConsoleTextAttribute(consoleWindow, difficulty + 54);
+                if (menuOption == 4) {
+                    cout << "> Налаштувати";
+                }
+                else {
+                    cout << "Налаштувати";
+                }
+                SetConsoleTextAttribute(consoleWindow, black);
+            }
+            case 6: {
+                SetConsoleCursorPosition(consoleWindow, {centerX, centerY + 6});
+                if (menuOption == 5) {
+                    SetConsoleTextAttribute(consoleWindow, selected);
+                    cout << "> Назад";
+                }
+                else {
+                    SetConsoleTextAttribute(consoleWindow, selectedNot);
+                    cout << "Назад";
+                }
+                SetConsoleTextAttribute(consoleWindow, black);
+            }
+        }
+
+        switch (_getch()) {
+            case UP: {
+                menuOption > 0 ? menuOption-- : menuOption = 5;
+                break;
+            }
+
+            case DOWN: {
+                menuOption < 5 ? menuOption++ : menuOption = 0;
+                break;
+            }
+
+            case Enter: {
+                switch (menuOption) {
+                    case 0: {
+                        diffuculty = 15;
+                        break;
+                    }
+
+                    case 1: {
+                        diffuculty = 25;
+                        break;
+                    }
+
+                    case 2: {
+                        diffuculty = 50;
+                        break;
+                    }
+
+                    case 3: {
+                        diffuculty = 75;
+                        break;
+                    }
+
+
+                    case 4: {
+                        do {
+                            system("cls");
+                            SetConsoleCursorPosition(consoleWindow, {centerX, centerY});
+                            SetConsoleTextAttribute(consoleWindow, selectedNot);
+                            cout << "Введіть відсоток заповненості поля мінами: ";
+                            SetConsoleTextAttribute(consoleWindow, selected);
+                            cin >> diffuculty;
+                            SetConsoleTextAttribute(consoleWindow, black);
+                            if (diffuculty == 0) {
+                                cin.clear();
+                                cin.ignore((numeric_limits<streamsize>::max)(), '\n');
+                                continue;
+                            }
+                        } while (diffuculty > 99 || diffuculty <= 0);
+                        break;
+                    }
+                    case 5: {
+                        return 0;
+                    }
+                };
+                exit = 0;
+                break;
+            }
+        };
+        system("cls");
+    } while (exit);
+
 }
 
 string inputPassword() {
