@@ -11,6 +11,7 @@ using namespace std;
 typedef const int keyPressedValue;
 typedef const short int consolePosition;
 typedef const int color;
+typedef const int fileValue;
 
 char fileFirstTime[] = "first_time.txt";
 char fileTempUser[] = "user_temp.txt";
@@ -26,8 +27,13 @@ color selected = 206;
 color selectedNot = 62;
 color black = 0;
 color warningOrError = 79;
-
 color difficulty = 47;
+
+fileValue Mine = 9;
+fileValue fieldFlag = 11, fieldOpen = 0, fieldCursor = -1, fieldClosed = -2;
+
+int row[] = { -1,  0, 0, 1, 1, -1, -1,  1 };
+int col[] = { 0, -1, 1, 0, 1, -1,  1, -1 };
 
 enum MenuOption { NEW_GAME, HELP, LEADERBOARD, EXIT, MENU_OPTIONS_COUNT };
 
@@ -55,6 +61,16 @@ int lines() {
 
     file.close();
     return lines_count;
+}
+
+bool inRange(vector<vector<int>>& field, int i, int j, int target) {
+    if (target == 0) {
+        return(i >= 0 && i < field.size()) && (j >= 0 && j < field[0].size() && field[i][j] != Mine);
+    }
+    else {
+        return (i >= 0 && i < field.size()) && (j >= 0 && j < field[0].size())
+            && field[i][j] == target;
+    }
 }
 
 void fileBubleSort(int countOfLines, struct user ptr[]) {
@@ -193,6 +209,54 @@ void helpMenu() {
     printCentered(centerX - 1, centerY + 5, "ASD", selected);
     printCentered(centerX - 5, centerY + 7, "Натисніть будь-яку клавішу для продовження...", selected);
     _getch();
+}
+
+void fieldMinesToEmptyValue(vector<vector<int>>& field, int height, int width) {
+    for (int i = 0; i < height; i++) {
+        for (int j = 0; j < width; j++) {
+            if (field[i][j] == 0) {
+                field[i][j] = -2;
+            }
+        }
+    }
+}
+
+void fieldCreating(vector<vector<int>>& field, vector<vector<int>>& fieldOn, int height, int width) {
+    for (int i = 0; i < height; i++)
+    {
+        fieldOn[i].resize(width, fieldClosed);
+        field[i].resize(width);
+    }
+}
+
+void fieldFilling(int difficulty, int height, int width) {
+    srand(time(NULL));
+    int i = 0, j = 0;
+    int minesLeft = 0, flags = 0;
+    flags = minesLeft = height * width * (difficulty / 100.0);
+
+    vector <vector <int>> fieldMines(height);
+    vector <vector <int>> fieldView(height);
+    fieldCreating(fieldMines, fieldView, height, width);
+
+    do {
+        i = rand() % height;
+        j = rand() % width;
+
+        if ((fieldMines[i][j] >= 0 && fieldMines[i][j] <= Mine - 1) && fieldMines[i][j] != Mine) {
+            fieldMines[i][j] = Mine;
+
+            for (int k = 0; k < 8; k++) {
+                if (inRange(fieldMines, i + row[k], j + col[k], 0)) {
+                    fieldMines[i + row[k]][j + col[k]] += 1;
+                }
+            }
+            minesLeft--;
+        }
+    } while (minesLeft != 0);
+
+    fieldMinesToEmptyValue(fieldMines, height, width);
+    //gameMain();
 }
 
 void fieldSize(int difficulty) {
@@ -370,6 +434,7 @@ int difficultyMenu() {
         system("cls");
     } while (exit);
 
+    fieldSize(difficulty);
 }
 
 string inputPassword() {
