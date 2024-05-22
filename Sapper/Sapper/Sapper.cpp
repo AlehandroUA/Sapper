@@ -76,15 +76,6 @@ bool inRange(vector<vector<int>>& field, int i, int j, int target) {
     }
 }
 
-bool inRange(vector<vector<int>>& field, int i, int j, int target) {
-    if (target == 0) {
-        return(i >= 0 && i < field.size()) && (j >= 0 && j < field[0].size() && field[i][j] != Mine);
-    }
-    else {
-        return (i >= 0 && i < field.size()) && (j >= 0 && j < field[0].size())
-            && field[i][j] == target;
-    }
-}
 
 void fileBubleSort(int countOfLines, struct user ptr[]) {
     bool exit;
