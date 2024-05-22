@@ -611,7 +611,6 @@ void fieldCreating(vector<vector<int>>& field, vector<vector<int>>& fieldOn, int
 }
 
 void fieldFilling(int difficulty, int height, int width) {
-    srand(time(NULL));
     int i = 0, j = 0;
     int minesLeft = 0, flags = 0;
     flags = minesLeft = height * width * (difficulty / 100.0);
