@@ -12,6 +12,7 @@ typedef const int keyPressedValue;
 typedef const int fileValue;
 typedef const short int consolePosition;
 typedef const int color;
+typedef const int fileValue;
 
 char fileTempUser[] = "user_temp.txt";
 char fileMainUsers[] = "users.txt";
@@ -63,6 +64,16 @@ int lines() {
 
     file.close();
     return lines_count;
+}
+
+bool inRange(vector<vector<int>>& field, int i, int j, int target) {
+    if (target == 0) {
+        return(i >= 0 && i < field.size()) && (j >= 0 && j < field[0].size() && field[i][j] != Mine);
+    }
+    else {
+        return (i >= 0 && i < field.size()) && (j >= 0 && j < field[0].size())
+            && field[i][j] == target;
+    }
 }
 
 bool inRange(vector<vector<int>>& field, int i, int j, int target) {
