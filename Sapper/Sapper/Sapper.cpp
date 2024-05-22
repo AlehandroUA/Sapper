@@ -4,7 +4,6 @@
 #include <vector>
 #include <conio.h>
 #include <windows.h>
-#include <ctime>
 #include <limits>
 
 using namespace std;
