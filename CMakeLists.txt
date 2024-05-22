@@ -4,6 +4,5 @@ project(Sapper)
 
 set(CMAKE_CXX_STANDARD 14)
 
-add_executable(Sapper
-        Sapper/Sapper.cpp)
+add_executable(Sapper/Sapper/Sapper.cpp)
 
