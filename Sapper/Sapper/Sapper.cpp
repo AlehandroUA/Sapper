@@ -634,7 +634,7 @@ void fieldFilling(int difficulty, int height, int width) {
     } while (minesLeft != 0);
 
     fieldMinesToEmptyValue(fieldMines, height, width);
-    //gameMain();
+    gameMain(flags, fieldMines, fieldView, height, width, difficulty);
 }
 
 void fieldSize(int difficulty) {
@@ -666,7 +666,7 @@ void fieldSize(int difficulty) {
         }
     } while (height < 2 || width < 2);
 
-    //fieldFilling();
+    fieldFilling(difficulty, height, width);
 }
 
 int difficultyMenu() {
