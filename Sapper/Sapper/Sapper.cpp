@@ -4,6 +4,7 @@
 #include <vector>
 #include <conio.h>
 #include <windows.h>
+#include <ctime>
 #include <limits>
 
 using namespace std;
@@ -76,15 +77,6 @@ bool inRange(vector<vector<int>>& field, int i, int j, int target) {
     }
 }
 
-bool inRange(vector<vector<int>>& field, int i, int j, int target) {
-    if (target == 0) {
-        return(i >= 0 && i < field.size()) && (j >= 0 && j < field[0].size() && field[i][j] != Mine);
-    }
-    else {
-        return (i >= 0 && i < field.size()) && (j >= 0 && j < field[0].size())
-            && field[i][j] == target;
-    }
-}
 
 void fileBubleSort(int countOfLines, struct user ptr[]) {
     bool exit;
@@ -619,7 +611,6 @@ void fieldCreating(vector<vector<int>>& field, vector<vector<int>>& fieldOn, int
 }
 
 void fieldFilling(int difficulty, int height, int width) {
-    srand(time(NULL));
     int i = 0, j = 0;
     int minesLeft = 0, flags = 0;
     flags = minesLeft = height * width * (difficulty / 100.0);
@@ -629,6 +620,7 @@ void fieldFilling(int difficulty, int height, int width) {
     fieldCreating(fieldMines, fieldView, height, width);
 
     do {
+        srand(time(NULL));
         i = rand() % height;
         j = rand() % width;
 
