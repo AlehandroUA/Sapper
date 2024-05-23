@@ -619,8 +619,9 @@ void fieldFilling(int difficulty, int height, int width) {
     fieldCreating(fieldMines, fieldView, height, width);
 
     do {
-        /*i = rand() % height;
-        j = rand() % width;*/
+        srand(time(NULL));
+        i = rand() % height;
+        j = rand() % width;
 
         if ((fieldMines[i][j] >= 0 && fieldMines[i][j] <= Mine - 1) && fieldMines[i][j] != Mine) {
             fieldMines[i][j] = Mine;
