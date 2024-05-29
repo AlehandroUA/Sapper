@@ -16,7 +16,7 @@
 Основною метою було **створити саму гру Сапер**, а не розвинуту систему авторизації.
 ### Підсистема
 Ми розробляли проект на мові програмування С++. Структура програми має наступний вигляд:
-![schema]([https://github.com/AlehandroUA/Sapper/sheme.png](https://github.com/AlehandroUA/Sapper/blob/main/sheme.png))
+![schema](https://github.com/AlehandroUA/Sapper/blob/main/sheme.png)
 ### Авторизаційна підсистема
 Наша система авторизації має наступний алгоритм:
 - Користувач вводить свої логін
